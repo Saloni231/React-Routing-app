@@ -17,11 +17,10 @@ import AuthenticationPage, {
 } from "./Pages/Authentication";
 import { action as LogoutAction } from "./Pages/Logout";
 import { loader as AuthLoader, AuthTokenLoader } from "./util/auth";
-import { lazy } from "react";
-
+import { Suspense, lazy } from "react";
 
 //import HomePage from "./Pages/HomePage";
-const HomePage = lazy(() => import('./Pages/HomePage'));
+const HomePage = lazy(() => import("./Pages/HomePage"));
 
 function App() {
   const router = createBrowserRouter([
@@ -32,7 +31,16 @@ function App() {
       element: <Layout />,
       errorElement: <ErrorPage />,
       children: [
-        { index: true, element: <HomePage /> },
+        {
+          index: true,
+          element: (
+            <Suspense
+              fallback={<p style={{ textAlign: "center" }}>Loading . . .</p>}
+            >
+              <HomePage />
+            </Suspense>
+          ),
+        },
         {
           path: "events",
           element: <EventLayout />,
@@ -40,7 +48,8 @@ function App() {
             {
               index: true,
               element: <EventsPage />,
-              loader: () => import('./Pages/EventsPage').then((module) => module.loader()),
+              loader: () =>
+                import("./Pages/EventsPage").then((module) => module.loader()),
             },
             {
               path: ":event_id",
