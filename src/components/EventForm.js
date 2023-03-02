@@ -1,24 +1,35 @@
-import { useNavigate, Form, useNavigation, useActionData, json, redirect } from "react-router-dom";
+import {
+  useNavigate,
+  Form,
+  useNavigation,
+  useActionData,
+  json,
+  redirect,
+} from "react-router-dom";
 
 import classes from "./EventForm.module.css";
+
+import { getAuthToken } from "../util/auth";
 
 function EventForm({ method, event }) {
   const data = useActionData();
   const navigate = useNavigate();
   const navigation = useNavigation();
 
-  const isSubmitting = navigation.state === 'submitting';
+  const isSubmitting = navigation.state === "submitting";
   function cancelHandler() {
     navigate("..");
   }
 
   return (
     <Form method={method} className={classes.form}>
-      {data && data.errors && <ul>
-        {Object.values(data.errors).map((err) => (
-          <li key={err}>{err}</li>
-        ))}
-        </ul>}
+      {data && data.errors && (
+        <ul>
+          {Object.values(data.errors).map((err) => (
+            <li key={err}>{err}</li>
+          ))}
+        </ul>
+      )}
       <p>
         <label htmlFor="title">Title</label>
         <input
@@ -63,7 +74,9 @@ function EventForm({ method, event }) {
         <button type="button" onClick={cancelHandler} disabled={isSubmitting}>
           Cancel
         </button>
-        <button disabled={isSubmitting}>{isSubmitting ? 'Submitting...' : 'Save'}</button>
+        <button disabled={isSubmitting}>
+          {isSubmitting ? "Submitting..." : "Save"}
+        </button>
       </div>
     </Form>
   );
@@ -71,37 +84,39 @@ function EventForm({ method, event }) {
 
 export default EventForm;
 
-export async function action({request, params}) {
+export async function action({ request, params }) {
   const data = await request.formData();
+  const token = getAuthToken();
 
   const eventData = {
-      title: data.get('title'),
-      image: data.get('image'),
-      date: data.get('date'),
-      description: data.get('description'),
-  }
+    title: data.get("title"),
+    image: data.get("image"),
+    date: data.get("date"),
+    description: data.get("description"),
+  };
 
   let url = "http://localhost:3001/events";
 
-  if (request.method === 'PATCH') {
+  if (request.method === "PATCH") {
     url = "http://localhost:3001/events/" + params.event_id;
   }
 
   const response = await fetch(url, {
-      method: request.method,
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(eventData)
-  })
+    method: request.method,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(eventData),
+  });
 
-  if(response.status === 422) {
-      return response;
+  if (response.status === 422) {
+    return response;
   }
 
   if (!response.ok) {
-      throw json({message: 'Could not save event.'}, {status: 500});
+    throw json({ message: "Could not save event." }, { status: 500 });
   } else {
-      return redirect('/events');
+    return redirect("/events");
   }
 }

@@ -1,12 +1,13 @@
 {
     "events": [
         {
-            "title": "A new event",
-            "image": "https://cdn.muenchen-p.de/fl_progressive,q_65/.imaging/stk/responsive/teaser300/dms/va-2016/muenchner-christkindlmarkt/christkindlmarkt-marienplat-logo-hp/document/christkindlmarkt-marienplat-logo-hp.jpg",
-            "date": "2022-10-01",
-            "description": "Some awesome event!",
-            "id": "2a42fcc4-ea21-4bdd-abf6-c40006dc66a9"
+            "title": "Open Mic",
+            "image": "https://images.shiksha.com/mediadata/images/articles/1583747992phpzaxKKK.jpeg",
+            "date": "2023-02-28",
+            "description": "A great night",
+            "id": "3964ccdb-b024-4204-a1a1-4ebbc16437f6"
         }
     ],
-    "users": []
+    "users": [
+    ]
 }
